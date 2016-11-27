@@ -2,9 +2,10 @@
 class TSP
 {
 public:
-	std::unique_ptr<matrix>& outputMatrixWithData;
+	matrix &matrixWithData;
+	const int size;
 
-	TSP(std::unique_ptr<matrix>& outputMatrixWithData);
+	TSP(matrix &matrixWithData);
 	~TSP();
 	void solveProblem();
 };
