@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "TSP.h"
 
-TSP::TSP(matrix &matrixWithData) : matrixWithData(matrixWithData), size(matrixWithData.size)
+TSP::TSP(matrix &matrixWithData) : matrixWithData(matrixWithData)
 {
-	
+	lowerBorder = 0;
 }
 
 TSP::~TSP()
@@ -42,7 +42,7 @@ void TSP::solveProblem()
 		if (min[i] == INT_MAX) {
 			min[i] = 0;
 		}
-		lb += min[i];
+		lowerBorder += min[i];
 	}
 
 	//odjecie minimalnych wag od kazdego elementu
@@ -69,7 +69,7 @@ void TSP::solveProblem()
 		if (min[i] == INT_MAX) {
 			min[i] = 0;
 		}
-		lb += min[i];
+		lowerBorder += min[i];
 	}
 
 	//odjecie minimalnych wag od kazdego elementu
@@ -126,7 +126,7 @@ void TSP::solveProblem()
 		}
 	}
 
-	cout << maksymalnyKosztWylaczeniaOdcinka << endl;
+	//3std::cout << maksymalnyKosztWylaczeniaOdcinka << std::endl;
 
 	for (int i = 0; i<matrixWithData.size; i++) {
 		for (int j = 0; j<matrixWithData.size; j++) {
@@ -148,7 +148,7 @@ void TSP::solveProblem()
 		matrixWithData.value[rowToDelete][i] = -1;
 	}
 
-	//    lb += maksymalnyKosztWylaczeniaOdcinka;
+	//    lowerBorder += maksymalnyKosztWylaczeniaOdcinka;
 
 
 	//    for (int i=0; i < matrixWithData.size; i++) {
@@ -168,7 +168,7 @@ void TSP::solveProblem()
 	//    for (int i=0; i < matrixWithData.size; i++) {
 	//        cout << minRow[i] << endl;
 	//    }
-	cout << lb << endl;
-	cout << "-------" << endl;
+	std::cout << "Lower border is: " << lowerBorder << std::endl;
+	std::cout << "-------" << std::endl;
 	
 }

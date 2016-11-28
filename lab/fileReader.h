@@ -9,6 +9,6 @@ public:
 	std::fstream file;
 	fileReader(std::string fileName);
 	~fileReader();
-	void read(std::unique_ptr<matrix>& outputMatrixWithData);
+	void read(matrix &outputMatrixWithData);
 };
 

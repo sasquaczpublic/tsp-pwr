@@ -3,7 +3,7 @@ class TSP
 {
 public:
 	matrix &matrixWithData;
-	const int size;
+	int lowerBorder;
 
 	TSP(matrix &matrixWithData);
 	~TSP();

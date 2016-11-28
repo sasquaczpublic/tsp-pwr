@@ -3,15 +3,21 @@
 
 #include "stdafx.h"
 #include "fileReader.h"
+#include "TSP.h"
 
 
 int main()
 {
-	auto matrixForTests{ std::make_unique<matrix>() };
+	matrix matrixForTests;
 
-	fileReader fileR("input.txt");
+	fileReader fileR("rbg323.txt");
 	fileR.read(matrixForTests);
-	matrixForTests->printMatrix();
+	//matrixForTests.printMatrix();
+
+	TSP salesman(matrixForTests);
+	salesman.solveProblem();
+
+	system("pause");
 
     return 0;
 }

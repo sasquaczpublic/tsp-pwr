@@ -11,7 +11,7 @@ fileReader::~fileReader()
 {
 }
 
-void fileReader::read(std::unique_ptr<matrix> &outputMatrixWithData)
+void fileReader::read(matrix &outputMatrixWithData)
 {
 
 	std::ifstream fileWithData;
@@ -29,9 +29,9 @@ void fileReader::read(std::unique_ptr<matrix> &outputMatrixWithData)
 	if (fileWithData.bad())
 		perror("error while reading file");
 
-	outputMatrixWithData->setMatrix(std::stoi(buffer.at(0)));
+	outputMatrixWithData.setMatrix(std::stoi(buffer.at(0)));
 
-	for (int i = 1; i <= outputMatrixWithData->size; i++)
+	for (int i = 1; i <= outputMatrixWithData.size; i++)
 	{
 		std::vector<int> splitedBuffer;
 		std::stringstream ss(buffer.at(i));
@@ -42,12 +42,12 @@ void fileReader::read(std::unique_ptr<matrix> &outputMatrixWithData)
 			splitedBuffer.push_back(std::stoi(tmpBuffer));
 		}
 
-		if(splitedBuffer.size() != outputMatrixWithData->size)
+		if(splitedBuffer.size() != outputMatrixWithData.size)
 			perror("error while reading file");
 
-		for (int j = 0; j < outputMatrixWithData->size; j++)
+		for (int j = 0; j < outputMatrixWithData.size; j++)
 		{
-			outputMatrixWithData->value.at(i - 1).at(j) = splitedBuffer.at(j);
+			outputMatrixWithData.value.at(i - 1).at(j) = splitedBuffer.at(j);
 		}
 	}
 
