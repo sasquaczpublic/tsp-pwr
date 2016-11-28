@@ -2,11 +2,8 @@
 class TSP
 {
 public:
-	matrix &matrixWithData;
-	int lowerBorder;
-
-	TSP(matrix &matrixWithData);
+	TSP();
 	~TSP();
-	void solveProblem();
+	void TSP::solveProblem(matrixWithLB &inputMatrix, matrixWithLB& outputLeftMatrix, matrixWithLB& outputRightMatrix);
 };
 
