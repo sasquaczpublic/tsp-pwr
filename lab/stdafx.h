@@ -15,13 +15,32 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <list>
+#include <queue>
+
+struct path
+{
+	int from, to;
+
+	path()
+	{
+		from = to = -1;
+	}
+
+	path(int from, int to)
+	{
+		this->from = from;
+		this->to = to;
+	}
+
+};
 
 struct matrix
 {
 	std::vector<std::vector<int>> value;
 	int size;
 
-	void setMatrix(int size)
+	void setSize(int size)
 	{
 		this->size = size;
 		value.resize(size);
@@ -31,7 +50,7 @@ struct matrix
 		}
 	}
 
-	void printMatrix()
+	void print()
 	{
 		for (int i = 0; i < size; i++)
 		{
@@ -45,12 +64,12 @@ struct matrix
 	}
 
 	matrix()
-	{		
+	{
 	}
 
 	matrix(const matrix & matrixToCopy)
 	{
-		setMatrix(matrixToCopy.size);
+		setSize(matrixToCopy.size);
 		for (int i = 0; i < size; i++)
 		{
 			for (int j = 0; j < size; j++)
@@ -61,6 +80,96 @@ struct matrix
 	}
 
 };
+
+struct problemNode
+{
+	std::vector<path> pathUntilNow;
+	std::list<int> pathAvaliable;
+	int LB;
+	int currentNode;
+
+	problemNode()
+	{
+		LB = 0;
+	}
+
+	problemNode(std::vector<path> untilNow, std::list<int> avaliable, int nodeNo)
+	{
+		pathUntilNow = untilNow;
+		pathAvaliable = avaliable;
+		LB = 0;
+		currentNode = nodeNo;
+	}
+
+	problemNode(std::vector<path> untilNow, std::list<int> avaliable, int nodeNo, int newLB)
+	{
+		pathUntilNow = untilNow;
+		pathAvaliable = avaliable;
+		LB = newLB;
+		currentNode = nodeNo;
+	}
+
+	void print()
+	{
+		std::cout << "crr: " << currentNode << " lb: " << LB << std::endl << "path: ";
+		for (int i = 0; i < pathUntilNow.size(); i++)
+		{
+			std::cout << pathUntilNow.at(i).from << "->" << pathUntilNow.at(i).to << ", ";
+		}
+		std::cout << std::endl << "avlb: ";
+		std::list<int>::iterator pathAvaliableIterator {pathAvaliable.begin()};
+		for (int i = 0; i < pathAvaliable.size(); i++)
+		{
+			std::cout << *pathAvaliableIterator << ", ";
+			std::advance(pathAvaliableIterator, 1);
+		}
+		std::cout << std::endl;
+	}
+
+};
+
+struct salesmanContainer
+{
+	matrix costs;
+	int smallestCost;
+	int mediumCost;
+	std::queue<problemNode> problems;
+	problemNode bestPath;
+
+	salesmanContainer()
+	{
+		smallestCost = INT32_MAX;
+		mediumCost = INT32_MAX;
+	}
+
+	void print()
+	{
+		int queueSize = problems.size();
+		problemNode tmpProblem;
+		for (int i = 0; i < queueSize; i++)
+		{
+			tmpProblem = problems.front();
+			problems.pop();
+			problems.push(tmpProblem);
+			std::cout << "--------------------------------------------------" << std::endl;
+			tmpProblem.print();
+		}
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 struct matrixWithLB
 {
@@ -84,7 +193,6 @@ struct matrixWithLB
 		lb = 0;
 	}
 };
-
 
 
 // TODO: reference additional headers your program requires here

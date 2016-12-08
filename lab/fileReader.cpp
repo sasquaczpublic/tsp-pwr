@@ -29,7 +29,7 @@ void fileReader::read(matrix &outputMatrixWithData)
 	if (fileWithData.bad())
 		perror("error while reading file");
 
-	outputMatrixWithData.setMatrix(std::stoi(buffer.at(0)));
+	outputMatrixWithData.setSize(std::stoi(buffer.at(0)));
 
 	for (int i = 1; i <= outputMatrixWithData.size; i++)
 	{
