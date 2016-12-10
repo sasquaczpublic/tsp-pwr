@@ -6,10 +6,9 @@
 
 TSP::TSP(matrix& pathCosts)
 {
-	debug = true;
+	debug = false;
 	costs = pathCosts;
-
-	costs.print();
+	timesToCheckBestPath = 10;
 	
 	calculateSmallestCost();
 
@@ -30,13 +29,36 @@ TSP::TSP(matrix& pathCosts)
 		
 }
 
+void TSP::clear()
+{
+	timesToCheckBestPath = 10;
+
+	while (problem.problems.size())
+		problem.problems.pop();
+
+	std::list<int> avaliableNodes;
+
+	for (int i = 0; i < costs.value.size(); i++)
+	{
+		avaliableNodes.push_back(i);
+	}
+
+	for (int i = 0; i < costs.value.size(); i++)
+	{
+		std::vector<path> startPath{};
+		avaliableNodes.remove(i);
+		problem.problems.push(problemNode(startPath, avaliableNodes, i));
+		avaliableNodes.push_back(i);
+	}
+}
+
 TSP::~TSP()
 {
 }
 
 void TSP::calculateSmallestCost()
 {
-	for (int choiceBest = 0; choiceBest < 10; choiceBest++)
+	for (int choiceBest = 0; choiceBest < timesToCheckBestPath; choiceBest++)
 	{
 		std::list<int> avaliableNodes;
 		std::list<int>::iterator pathAvaliableIterator;
@@ -104,7 +126,7 @@ void TSP::calculateLB()
 
 void TSP::calculatePath()
 {
-	int j = 0;
+	int j {0}, k{0};
 	while (true)
 	{
 		if (problem.problems.empty())
@@ -118,6 +140,7 @@ void TSP::calculatePath()
 		{
 			int cost = costs.value.at(currentProblem.currentNode).at(currentProblem.pathUntilNow.front().from);
 			if (debug) std::cout << "SMALLEST? min:current " << problem.smallestCost << ":" << currentProblem.LB + cost << std::endl;
+			++k;
 			if (currentProblem.LB + cost < problem.smallestCost)
 			{
 				problem.smallestCost = currentProblem.LB + cost;
@@ -131,31 +154,85 @@ void TSP::calculatePath()
 
 		int nextNode = INT32_MAX;
 
-		for (int i = 0; i < currentProblem.pathAvaliable.size(); i++)
+		for (int i = 0; i <= currentProblem.pathAvaliable.size(); i++)
 		{
 			//int nextNode = rand() % currentProblem.pathAvaliable.size();
 			nextNode = currentProblem.pathAvaliable.front();
+			currentProblem.pathAvaliable.pop_front();
 			int cost = costs.value.at(currentProblem.currentNode).at(nextNode);
 			if (currentProblem.LB + cost < problem.smallestCost)
 			{
 				std::vector<path> newPath = currentProblem.pathUntilNow;
 				newPath.push_back(path(currentProblem.currentNode, nextNode));
-				currentProblem.pathAvaliable.pop_front();
+				
 				problem.problems.push(problemNode(newPath, currentProblem.pathAvaliable, nextNode, currentProblem.LB + cost));
-				currentProblem.pathAvaliable.push_back(nextNode);
+				
 			}
+			currentProblem.pathAvaliable.push_back(nextNode);
 		}
 		if (debug) std::cout << "===========================================" << std::endl << "while: " << ++j << std::endl << "===========================================" << std::endl;
 		if (debug) currentProblem.print();
 	}
 
-	std::cout << "Best: " << std::endl;
+	std::cout << "Best: " << std::endl << k << " times checked, whether it is the best path, and used " << timesToCheckBestPath << " random paths" << std::endl;
 	problem.bestPath.print();
 
 }
 
 
+void TSP::calculatePathByBruteForce()
+{
+	int j{ 0 }, k{ 0 };
+	while (true)
+	{
+		if (problem.problems.empty())
+			break;
+		problemNode currentProblem = problem.problems.front();
+		//std::list<int>::iterator pathAvaliableIterator;
+		problem.problems.pop();
 
+
+		if (currentProblem.pathAvaliable.empty())
+		{
+			int cost = costs.value.at(currentProblem.currentNode).at(currentProblem.pathUntilNow.front().from);
+			if (debug) std::cout << "SMALLEST? min:current " << problem.smallestCost << ":" << currentProblem.LB + cost << std::endl;
+			++k;
+			if (currentProblem.LB + cost < problem.smallestCost)
+			{
+				problem.smallestCost = currentProblem.LB + cost;
+				std::vector<path> newPath = currentProblem.pathUntilNow;
+				newPath.push_back(path(currentProblem.currentNode, currentProblem.pathUntilNow.front().from));
+				problem.bestPath = problemNode(newPath, currentProblem.pathAvaliable, currentProblem.pathUntilNow.front().from, currentProblem.LB + cost);
+
+			}
+			continue;
+		}
+
+		int nextNode = INT32_MAX;
+
+		for (int i = 0; i <= currentProblem.pathAvaliable.size(); i++)
+		{
+			//int nextNode = rand() % currentProblem.pathAvaliable.size();
+			nextNode = currentProblem.pathAvaliable.front();
+			currentProblem.pathAvaliable.pop_front();
+			int cost = costs.value.at(currentProblem.currentNode).at(nextNode);
+
+			std::vector<path> newPath = currentProblem.pathUntilNow;
+			newPath.push_back(path(currentProblem.currentNode, nextNode));
+
+			problem.problems.push(problemNode(newPath, currentProblem.pathAvaliable, nextNode, currentProblem.LB + cost));
+
+
+			currentProblem.pathAvaliable.push_back(nextNode);
+		}
+		if (debug) std::cout << "===========================================" << std::endl << "while: " << ++j << std::endl << "===========================================" << std::endl;
+		if (debug) currentProblem.print();
+	}
+
+	std::cout << "Best: " << std::endl << k << " times checked, whether it is the best path" << std::endl;
+	problem.bestPath.print();
+
+}
 
 
 

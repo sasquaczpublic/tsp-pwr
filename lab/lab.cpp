@@ -4,20 +4,96 @@
 #include "stdafx.h"
 #include "fileReader.h"
 #include "TSP.h"
+#include <chrono>
 
 
 int main()
 {
 	srand(time(NULL));
 
-	matrix matrixForTests;
+	matrix costsMatrix;
 
-	fileReader fileR("tsp5.txt");
-	fileR.read(matrixForTests);
-	//matrixForTests.printMatrix();
-	TSP salesman(matrixForTests);
+//	fileReader fileR("tsp4.txt");
+//	fileR.read(costsMatrix);
+//	//matrixForTests.printMatrix();
+//	TSP salesman(costsMatrix);
+//	std::cout << "B&B method: " << std::endl;
+//	salesman.calculatePath();
+//	salesman.clear();
+//	std::cout << "brute force method: " << std::endl;
+//	salesman.calculatePathByBruteForce();
+	auto start = std::chrono::system_clock::now();
+	auto end = std::chrono::system_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	
+	std::string filename = "";
+	bool mainWhile = true;
+	while (mainWhile)
+	{
+		std::cout << "Podaj nazwe pliku lub 0 aby wyjsc:" << std::endl;
+		std::cin >> filename;
+		if (filename == "0")
+			break;
+		fileReader fileR(filename);
+		fileR.read(costsMatrix);
 
-	salesman.calculatePath();
+		bool mainWhile = true;
+		char inputFromUser = '1';
+		while(mainWhile)
+		{
+			std::cout << "Operacje:" << std::endl <<
+				"1. Wyswietl macierz kosztow," << std::endl <<
+				"2. Wykonaj algorytm B&B," << std::endl <<
+				"3. Wykonaj algorytm BF," << std::endl <<
+				"4. Wykonaj algorytm B&B a po nim BF," << std::endl <<
+				"0. Powrot" << std::endl;
+			std::cin >> inputFromUser;
+			TSP salesman(costsMatrix);
+
+			switch (inputFromUser)
+			{
+			case '1':
+				salesman.costs.print();
+				break;
+			case '2':
+				start = std::chrono::system_clock::now();
+				salesman.calculatePath();
+				end = std::chrono::system_clock::now();
+				elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+				std::cout << "time: " << elapsed.count() << '\n';
+				salesman.clear();
+				break;
+			case '3':
+				salesman.calculatePathByBruteForce();
+				end = std::chrono::system_clock::now();
+				elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+				std::cout << "time: " << elapsed.count() << '\n';
+				salesman.clear();
+				break;
+			case '4':
+				end = std::chrono::system_clock::now();
+				salesman.calculatePath();
+				end = std::chrono::system_clock::now();
+				elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+				std::cout << "time: " << elapsed.count() << '\n';
+				salesman.clear();
+				end = std::chrono::system_clock::now();
+				salesman.calculatePathByBruteForce();
+				end = std::chrono::system_clock::now();
+				elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+				std::cout << "time: " << elapsed.count() << '\n';
+				salesman.clear();
+				break;
+			case '0':
+				mainWhile = false;
+				break;
+			default:
+
+				break;
+			}
+		}
+		
+	}
 
 	
 
