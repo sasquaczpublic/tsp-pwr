@@ -31,8 +31,6 @@ TSP::TSP(matrix& pathCosts)
 
 void TSP::clear()
 {
-	timesToCheckBestPath = 10;
-
 	while (problem.problems.size())
 		problem.problems.pop();
 
